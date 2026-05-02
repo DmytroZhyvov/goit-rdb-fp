@@ -31,7 +31,7 @@
 ![3 num_rabies_count)](images/3_num_rabies_count.png)
 
 # 4 Побудуйте колонку різниці в роках.;
-![4 years_diff)](images/4 years_diff.png)
+![4 years_diff)](images/4_years_diff.png)
 
 # 5 Побудуйте власну функцію.;
 ![5_own_func)](images/5_own_func.png)
