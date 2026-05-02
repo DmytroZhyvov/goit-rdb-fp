@@ -1,0 +1,86 @@
+1.1
+CREATE SCHEMA pandemic;
+
+1.2
+USE pandemic;
+
+1.4 - 2.1
+CREATE TABLE countries (
+    country_id INT AUTO_INCREMENT PRIMARY KEY,
+    Entity VARCHAR(100),
+    Code VARCHAR(10)
+);
+
+INSERT INTO countries (Entity, Code)
+SELECT DISTINCT Entity, Code
+FROM infectious_cases;
+
+ALTER TABLE infectious_cases
+ADD COLUMN country_id INT;
+
+UPDATE infectious_cases
+JOIN countries
+ON infectious_cases.Entity = countries.Entity
+AND infectious_cases.Code = countries.Code
+SET infectious_cases.country_id = countries.country_id;
+
+ALTER TABLE infectious_cases
+DROP COLUMN Entity,
+DROP COLUMN Code;
+
+ALTER TABLE infectious_cases
+ADD CONSTRAINT fk_infectious_cases_country
+FOREIGN KEY (country_id) REFERENCES countries(country_id);
+
+SELECT COUNT(*) FROM infectious_cases;
+SELECT COUNT(*) FROM countries;
+
+3.
+SELECT
+    c.country_id,
+    c.Entity,
+    c.Code,
+    AVG(ic.Number_rabies) AS avg_rabies,
+    MIN(ic.Number_rabies) AS min_rabies,
+    MAX(ic.Number_rabies) AS max_rabies,
+    SUM(ic.Number_rabies) AS sum_rabies
+FROM infectious_cases as ic
+JOIN countries as c
+    ON ic.country_id = c.country_id
+WHERE ic.Number_rabies IS NOT NULL
+GROUP BY c.country_id, c.Entity, c.Code
+ORDER BY avg_rabies DESC
+LIMIT 10;
+
+4.
+SELECT
+    Year,
+    STR_TO_DATE(CONCAT(Year, '-01-01'), '%Y-%m-%d') AS year_start_date,
+    CURDATE() AS today_date,
+    TIMESTAMPDIFF(
+        YEAR,
+        STR_TO_DATE(CONCAT(Year, '-01-01'), '%Y-%m-%d'),
+        CURDATE()
+    ) AS years_diff
+FROM infectious_cases;
+
+5.
+DELIMITER $$
+
+CREATE FUNCTION year_diff(input_year INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    RETURN TIMESTAMPDIFF(
+        YEAR,
+        STR_TO_DATE(CONCAT(input_year, '-01-01'), '%Y-%m-%d'),
+        CURDATE()
+    );
+END $$
+DELIMITER ;
+
+SELECT
+    Year,
+    year_diff(Year) AS years_diff
+FROM infectious_cases;
+
