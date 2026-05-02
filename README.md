@@ -1,5 +1,5 @@
 # 1.1 Створіть схему pandemic у базі даних за допомогою SQL-команди.;
-![1.1 pandemic db](images/1_1_pandemic db.png)
+![1.1 pandemic db](images/1_1_pandemic_db.png)
 
 # 1.2 Оберіть її як схему за замовчуванням за допомогою SQL-команди.;
 ![1.2 use as default](images/1_2_use_as_default.png)
